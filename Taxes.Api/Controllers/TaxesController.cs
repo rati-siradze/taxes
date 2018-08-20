@@ -34,15 +34,15 @@ namespace Taxes.Api.Controllers
         [Route("Taxes/Add")]
         public HttpResponseMessage Add([FromBody]AddTaxRequest request)
         {
-            worker.Add(new Tax(request.City, request.Type, request.Rate));
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        }
+            if (request == null || !request.IsValid)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-        [HttpPost]
-        [Route("Taxes/Edit")]
-        public float Edit([FromBody]GetTaxRateRequest request)
-        {
-            return worker.GetRate(request.City, request.Date.Value);
+            worker.Add(new Tax(request.City, request.Type, request.Rate) {
+                EffectiveFrom = request.From,
+                EffectiveTill = request.To
+            });
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         [HttpPut]

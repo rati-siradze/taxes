@@ -24,8 +24,8 @@ namespace Taxes.Engine
         public float GetRate(string city, DateTime date)
         {
             var tax = db.Taxes.Where(x => x.City == city
-                                             && x.EffectiveFrom >= date
-                                             && (x.EffectiveTill == null || x.EffectiveTill > date))
+                                             && x.EffectiveFrom <= date
+                                             && (x.EffectiveTill == null || x.EffectiveTill >= date))
                                             .OrderBy(x => x.Type)
                                             .FirstOrDefault();
                 

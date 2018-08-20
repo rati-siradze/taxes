@@ -17,24 +17,19 @@ namespace Taxes.Client
         static void Main(string[] args)
         {
 
-            Thread.Sleep(3000);
-
             Console.WriteLine("Taxes service examples..");
 
             var client = new RestClient(WebConfigurationManager.AppSettings.Get("ServiceUrl"));
 
+            Console.WriteLine("Add single tax");
 
-            Console.WriteLine("Importing taxes from batch files");
+            var request = new RestRequest("/taxes/add", Method.PUT);
 
-            var importBatchRequest = new RestRequest("/taxes/import", Method.PUT);
+            request.AddParameter("application/json", new { }, ParameterType.RequestBody);
 
-            importBatchRequest.AddParameter("application/text", File.ReadAllBytes(Resources.taxes), ParameterType.RequestBody);
+            request.AddFile("taxes", File.ReadAllBytes(Resources.taxes), "taxes");
 
-            //importBatchRequest.AddFile("taxes", File.ReadAllBytes(Resources.taxes), "taxes");
-
-            client.Execute(importBatchRequest);
-
-
+            client.Execute(request);
             Console.WriteLine("Imported");
             Console.ReadKey();
         }
